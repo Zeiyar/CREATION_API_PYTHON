@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "title": "Alex Martin",
+    "description": "Support technique – en charge du traitement des tickets clients.",
+    "priority": "Low",
+    "status": "Active",
+    "tags": ["support", "technical"],
+    "createdAt": "2026-01-10"
+  },
+  {
+    "id": 2,
+    "title": "Camille Dupont",
+    "description": "Product Owner – responsable des priorités fonctionnelles.",
+    "priority": "High",
+    "status": "Active",
+    "tags": ["product", "management"],
+    "createdAt": "2026-01-10"
+  },
+  {
+    "id": 3,
+    "title": "Julien Bernard",
+    "description": "Développeur backend – maintenance et évolution de l’API.",
+    "priority": "Medium",
+    "status": "Active",
+    "tags": ["backend", "api"],
+    "createdAt": "2026-01-11"
+  },
+  {
+    "id": 4,
+    "title": "Sarah Leroy",
+    "description": "QA / Test – validation des fonctionnalités et détection des bugs.",
+    "priority": "Medium",
+    "status": "Active",
+    "tags": ["qa", "testing"],
+    "createdAt": "2026-01-11"
+  },
+  {
+    "id": 5,
+    "title": "Thomas Moreau",
+    "description": "Développeur frontend – interface utilisateur et intégration API.",
+    "priority": "Medium",
+    "status": "Active",
+    "tags": ["frontend", "ui"],
+    "createdAt": "2026-01-12"
+  },
+  {
+    "id": 6,
+    "title": "Emma Petit",
+    "description": "Customer Success – suivi des demandes et retours utilisateurs.",
+    "priority": "Low",
+    "status": "Active",
+    "tags": ["customer", "support"],
+    "createdAt": "2026-01-12"
+  },
+  {
+    "id": 7,
+    "title": "Lucas Fontaine",
+    "description": "DevOps – gestion des environnements et déploiements.",
+    "priority": "High",
+    "status": "Active",
+    "tags": ["devops", "infrastructure"],
+    "createdAt": "2026-01-13"
+  },
+  {
+    "id": 8,
+    "title": "Léa Robert",
+    "description": "UX Designer – amélioration de l’expérience utilisateur.",
+    "priority": "Low",
+    "status": "Active",
+    "tags": ["ux", "design"],
+    "createdAt": "2026-01-13"
+  },
+  {
+    "id": 9,
+    "title": "Maxime Girard",
+    "description": "Chef de projet – coordination et suivi de l’équipe.",
+    "priority": "High",
+    "status": "Active",
+    "tags": ["project", "management"],
+    "createdAt": "2026-01-14"
+  },
+  {
+    "id": 10,
+    "title": "Nina Lopez",
+    "description": "Support niveau 1 – premier contact avec les utilisateurs.",
+    "priority": "Low",
+    "status": "Active",
+    "tags": ["support", "level1"],
+    "createdAt": "2026-01-14"
+  }
+]
