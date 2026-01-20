@@ -2,16 +2,16 @@
   {
     "id": 1,
     "title": "Alex Martin",
-    "description": "Support technique – en charge du traitement des tickets clients.",
+    "description": "Plusieurs utilisateurs signalent l’impossibilité de se connecter à l’application interne de gestion des tickets depuis ce matin.",
     "priority": "Low",
-    "status": "Active",
+    "status": "Pending",
     "tags": ["support", "technical"],
     "createdAt": "2026-01-10"
   },
   {
     "id": 2,
     "title": "Camille Dupont",
-    "description": "Product Owner – responsable des priorités fonctionnelles.",
+    "description": "Demande de correction urgente sur une fonctionnalité critique du produit qui empêche la validation des commandes clients.",
     "priority": "High",
     "status": "Active",
     "tags": ["product", "management"],
@@ -20,16 +20,16 @@
   {
     "id": 3,
     "title": "Julien Bernard",
-    "description": "Développeur backend – maintenance et évolution de l’API.",
+    "description": "Erreur 500 intermittente sur l’API lors de la récupération des données utilisateurs après la dernière mise à jour.",
     "priority": "Medium",
-    "status": "Active",
+    "status": "Inactive",
     "tags": ["backend", "api"],
     "createdAt": "2026-01-11"
   },
   {
     "id": 4,
     "title": "Sarah Leroy",
-    "description": "QA / Test – validation des fonctionnalités et détection des bugs.",
+    "description": "Plusieurs tests automatisés échouent suite à une régression détectée sur le module de paiement.",
     "priority": "Medium",
     "status": "Active",
     "tags": ["qa", "testing"],
@@ -38,25 +38,24 @@
   {
     "id": 5,
     "title": "Thomas Moreau",
-    "description": "Développeur frontend – interface utilisateur et intégration API.",
+    "description": "Problème d’affichage sur le tableau de bord : les données ne se rafraîchissent pas après un changement de filtre.",
     "priority": "Medium",
-    "status": "Active",
+    "status": "Pending",
     "tags": ["frontend", "ui"],
     "createdAt": "2026-01-12"
-  },
-  {
+  },{
     "id": 6,
     "title": "Emma Petit",
-    "description": "Customer Success – suivi des demandes et retours utilisateurs.",
+    "description": "Un client signale que certaines de ses demandes restent bloquées au statut “en cours” sans mise à jour depuis plusieurs jours.",
     "priority": "Low",
-    "status": "Active",
+    "status": "Inactive",
     "tags": ["customer", "support"],
     "createdAt": "2026-01-12"
   },
   {
     "id": 7,
     "title": "Lucas Fontaine",
-    "description": "DevOps – gestion des environnements et déploiements.",
+    "description": "Échec du déploiement automatique en production à cause d’une erreur de configuration sur l’environnement serveur.",
     "priority": "High",
     "status": "Active",
     "tags": ["devops", "infrastructure"],
@@ -65,25 +64,25 @@
   {
     "id": 8,
     "title": "Léa Robert",
-    "description": "UX Designer – amélioration de l’expérience utilisateur.",
+    "description": "Retours utilisateurs indiquant une navigation peu intuitive sur le formulaire de création de ticket.",
     "priority": "Low",
-    "status": "Active",
+    "status": "Pending",
     "tags": ["ux", "design"],
     "createdAt": "2026-01-13"
   },
   {
     "id": 9,
     "title": "Maxime Girard",
-    "description": "Chef de projet – coordination et suivi de l’équipe.",
+    "description": "Retard constaté sur plusieurs tâches du sprint en cours, nécessitant une réévaluation des priorités et des ressources.",
     "priority": "High",
-    "status": "Active",
+    "status": "Inactive",
     "tags": ["project", "management"],
     "createdAt": "2026-01-14"
   },
   {
     "id": 10,
     "title": "Nina Lopez",
-    "description": "Support niveau 1 – premier contact avec les utilisateurs.",
+    "description": "Un utilisateur ne parvient pas à réinitialiser son mot de passe via le portail interne malgré plusieurs tentatives.",
     "priority": "Low",
     "status": "Active",
     "tags": ["support", "level1"],
