@@ -4,7 +4,7 @@ import json
 test = os.path.getsize("tickets.json")  #récuperer la taille du fichier sous forme d'entier (si 0 = vide)
 if test == 0:
     print("Erreur: Le fichier est vide")
-    exit            # Vérifier que le fichier n'est pas vide et quitter le script si c'est le cas
+    exit()           # Vérifier que le fichier n'est pas vide et quitter le script si c'est le cas
 
 
 # Fonction pour vérifier si l'ID du ticket est valide
@@ -30,14 +30,16 @@ def modify_ticket(file_path, ancient_file_id, updates):
         if ticket.get("id") == ancient_file_id:
             for key,value in updates.items():
                 ticket[key] = value
-                print("modify successfull")
+                #print("modify successfull")
             break
     else:
-        print("non trouvé")
+        #print("non trouvé")
         return    
     
     with open(file_path,"w",encoding="utf-8") as f:
         json.dump(tickets,f,indent=2,ensure_ascii=False)
+    
+    return tickets
 
 # Exemple de modification d'un ticket
 modify_ticket(
