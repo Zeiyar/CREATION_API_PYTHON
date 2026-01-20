@@ -15,9 +15,9 @@ def get_all_ticket_sorted(file_path):
 
     
     # filtrer les tickets (prio status / priority / createdAt)
-    order = {
-        "Active": 0,
-        "Pending": 1,
+    order_status = {
+        "Active": 1,
+        "Pending": 0,
         "Inactive": 2
     }
 
@@ -31,13 +31,13 @@ def get_all_ticket_sorted(file_path):
     count = {}
     nbtickets_by_status = {}
 
-
-    for el in tickets:  # el = chaque ticket
+    # Regrouper les tickets par statut
+    for el in tickets:  
         if not el:
             continue  # ticket vide → on passe au suivant
 
-        #status = el["status"]
-        status = el.get("status")
+        #status = el["status"]          # acces direct à la clé, si elle n'existe pas, KeyError
+        status = el.get("status")       # acces via get(), si elle n'existe pas, None
         if not status:
             continue
 
@@ -45,23 +45,52 @@ def get_all_ticket_sorted(file_path):
             count[status] = 0
             nbtickets_by_status[status] = []
 
-        count[status] += 1
         nbtickets_by_status[status].append(el)
+        count[status] += 1
+        
 
-    for status, tickets_list in nbtickets_by_status.items():
-        nbtickets_by_status[status] = sorted(
-            tickets_list,
-            key=lambda el: (
-                order.get(el["status"], 99),
-                order_prio.get(el["priority"], 99),
-                el.get("createdAt", 0),
+    # Trier chaque ticket par priorité puis id
+    #sorted_status = sorted(
+    #    nbtickets_by_status.keys(),
+    #       key=lambda status: order_status.get(status,99))
+    
+    
+    #for status, tickets_list in sorted_status:
+    #    sorted_status[status] = sorted(
+    #for status, tickets_list in nbtickets_by_status.items():
+    #    nbtickets_by_status[status] = sorted(
+    #        tickets_list,
+    #        key=lambda el: (
+    #            #order_prio.get(el["priority"], 99),
+    #            order_prio.get(el.get("priority"), 99),
+    #            el.get("createdAt", 0),
+    #        )
+    #    )
+
+    # Trier chaque ticket par priorité puis id
+    for status, ticket_list in nbtickets_by_status.items():     #.items(): récupère clé ("Active", "Pending", etc) et valeur (liste des tickets du statut)
+        nbtickets_by_status[status] = sorted(               #remplace pour une nouvelle liste triée
+            ticket_list,                              #la liste des tickets à trier
+            key=lambda el: (                               #key définit la fonction de tri et el chaque ticket
+                order_prio.get(el.get("priority"), 99),       #si priorité absente, valeur 99 (fin de liste)
+                el.get("id", 0)
             )
         )
+
+    # Trier les status entre eux 
+    sorted_tickets_by_status = dict(
+        sorted(
+            nbtickets_by_status.items(),
+            key=lambda item: order_status.get(item[0], 99)
+        )
+    )
+
 
     # résultat final
     result = {
         "count": count,
-        "tickets": nbtickets_by_status
+        #"tickets": sorted_status
+        "tickets": sorted_tickets_by_status
     }
 
     if not result:
