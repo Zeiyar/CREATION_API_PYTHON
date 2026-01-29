@@ -4,11 +4,22 @@ from script.delete import delete_ticket
 from script.get_one import get_one_ticket
 from script.modify import modify_ticket
 from script.sort import get_all_ticket_sorted
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
+# Middleware CORS configuration pour autoriser les requêtes depuis le frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], # ou [""] en dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 #GET
-@app.get("/")                   # FastAPI decorator to define a GET endpoint at the root URL
+@app.get("/tickets")                   # FastAPI decorator to define a GET endpoint at the root URL
 def get_all_tickets_main():
     return get_all_ticket_sorted("tickets.json")
     
