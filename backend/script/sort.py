@@ -11,15 +11,24 @@ if file == 0:
 
 
 # fonction pour parser les dates (format ISO 8601 : "2024-01-25T14:32:00")
+from datetime import datetime, timezone
+
 def parse_date(date_str):
-    if not date_str:                # verifier si la date existe ou non
-        return datetime.min
+    if not date_str:
+        return datetime.min.replace(tzinfo=timezone.utc)
+
+    # Timestamp (ms)
     if isinstance(date_str, (int, float)):
-        return datetime.fromtimestamp(date_str / 1000)
+        return datetime.fromtimestamp(date_str / 1000, tz=timezone.utc)
+
     try:
-        return datetime.fromisoformat(date_str)
+        dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        # Force UTC aware
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
     except Exception:
-        return datetime.min
+        return datetime.min.replace(tzinfo=timezone.utc)
 
 
 # charger ticket JSON
