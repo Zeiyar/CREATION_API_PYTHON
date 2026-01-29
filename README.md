@@ -1,14 +1,9 @@
-# CREATION_API_PYTHON
 # 📌 Projet – Gestion de tickets (Python, FastAPI & React)
+# by Corentin Mariey - Jean-Baptiste Lizé
 
 ## 🧠 Contexte du projet
 
 Ce projet a pour objectif de manipuler et traiter des données de tickets en **Python**, puis d’exposer ces données via une **API REST FastAPI**, connectée à un **frontend React (Vite)**.
-
-Le projet est réalisé en **binôme**, avec une alternance de rôles :
-
-* **Dev** : implémentation technique
-* **Guide** : accompagnement, réflexion et aide à la résolution
 
 Le travail s’inscrit dans une démarche pédagogique utilisant un **LLM** pour apprendre progressivement lors des développements.
 
@@ -152,13 +147,14 @@ L’API utilise `HTTPException` avec des codes HTTP adaptés :
 
 ## 🧪 Script Python (hors API)
 
-Le fichier `script.py` permet :
+Le fichier `main.py` avec ses imports du fichier /script/ permet :
 
 * Lecture du JSON
 * Comptage des tickets par statut
 * Tri (statut → priorité → date)
 * Ajout d’un ticket
 * Mise à jour d’un ticket
+* Suppression d'un ticket
 
 Utilisé pour valider la logique métier avant l’API.
 
@@ -168,7 +164,7 @@ Utilisé pour valider la logique métier avant l’API.
 
 ### 📦 Prérequis
 
-* Node.js **18+**
+* Git bash
 * npm
 
 ### 🔧 Installation
@@ -193,14 +189,25 @@ Frontend accessible sur :
 
 ## 🔄 Connexion Front ↔ Back
 
-Le frontend utilise `fetch` pour consommer l’API :
+Le frontend utilise `fetch` pour aller chercher dans l’API :
 
-* GET → affichage des tickets
-* POST → création via formulaire
+* GET → affichage tous les tickets
+* POST → création de tickets via un formulaire à remplir par l'utilisateur
 * PATCH → édition d’un ticket
-* DELETE → suppression
+* DELETE → suppression d'une ticket
 
 CORS configuré côté FastAPI pour autoriser `localhost:5173`.
+Grace à un Middleware CORS configuration pour autoriser les requêtes depuis le frontend
+
+```py
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
 
 ---
 
@@ -208,6 +215,7 @@ CORS configuré côté FastAPI pour autoriser `localhost:5173`.
 
 ✔️ API fonctionnelle
 ✔️ Affichage des tickets
+✔️ Affichage de la description du ticket quand on clic dessus
 ✔️ Création de ticket
 ✔️ Mise à jour du statut
 ✔️ Suppression
@@ -218,19 +226,8 @@ CORS configuré côté FastAPI pour autoriser `localhost:5173`.
 ## 📚 Documentation complémentaire
 
 * `README.md` : installation et usage
-* `LEARNING.md` : notions apprises (FastAPI, React, CORS, HTTP, tri, état React)
+* `LEARNING.md` : preuves de prompts concrètes (bugs + prompts + apprentissages)
 
----
-
-## 🎤 Démo
-
-Lors de la démonstration :
-
-1. Lancer l’API
-2. Lancer le frontend
-3. Créer un ticket
-4. Modifier son statut
-5. Vérifier la persistance dans `tickets.json`
 
 ---
 
@@ -243,5 +240,4 @@ Ce projet permet de :
 * Connecter un frontend moderne
 * Appliquer de bonnes pratiques (HTTP, tri, état, erreurs)
 
-🚀 Projet prêt pour évaluation et démonstration.
 
