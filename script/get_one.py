@@ -10,10 +10,10 @@ if file == 0:
 def get_one_ticket(file_path,id):
     with open(file_path,"r",encoding="utf-8") as file:
         tickets = json.load(file) 
-    for ticket in tickets:
-        if id == ticket["id"]:
-            return ticket
-    else:
-        return None
+        for ticket in tickets:
+            if id == ticket["id"]:
+                return ticket
+        else:
+            return None
         
 #print(get_one_ticket("tickets.json",1))
