@@ -13,6 +13,7 @@ def add_ticket(new_ticket,file_path):
     with open(file_path,"r",encoding="utf-8") as file:
         tickets = json.load(file)
 
+    new_ticket["id"] = max(t["id"] for t in tickets) + 1 if tickets else 1
     # Ajouter le nouveau ticket à la liste des tickets existants     
     tickets.append(new_ticket)    
     
@@ -20,3 +21,4 @@ def add_ticket(new_ticket,file_path):
     with open(file_path,"w",encoding="utf-8") as file:
         json.dump(tickets,file,indent=2,ensure_ascii=False)
     #print("adding successfull")
+    return new_ticket
