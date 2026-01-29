@@ -13,9 +13,12 @@ def add_ticket(new_ticket,file_path):
     with open(file_path,"r",encoding="utf-8") as file:
         tickets = json.load(file)
 
-    new_ticket["id"] = max(t["id"] for t in tickets) + 1 if tickets else 1
+    new_ticket["id"] = max(t["id"] for t in tickets) + 1 if tickets else 1  # Assigner un ID unique au nouveau ticket
+
     # Ajouter le nouveau ticket à la liste des tickets existants     
-    tickets.append(new_ticket)    
+    tickets.append(new_ticket)  
+      
+    
     
     # Réécrire le fichier JSON avec le nouveau ticket ajouté
     with open(file_path,"w",encoding="utf-8") as file:

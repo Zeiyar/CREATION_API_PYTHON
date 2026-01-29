@@ -26,20 +26,21 @@ def modify_ticket(file_path, ancient_file_id, updates):
         tickets = json.load(f)
         
     # Rechercher le ticket par son ID associée et appliquer les mises à jour
-    for ticket in tickets:
+    for i,ticket in enumerate(tickets):
         if ticket.get("id") == ancient_file_id:
-            for key,value in updates.items():
-                ticket[key] = value
+            tickets[i] = {**ticket,**updates}
+            updated_ticket = tickets[i]
                 #print("modify successfull")
             break
     else:
         #print("non trouvé")
-        return    
+        return
+    
     
     with open(file_path,"w",encoding="utf-8") as f:
         json.dump(tickets,f,indent=2,ensure_ascii=False)
     
-    return tickets
+    return updated_ticket
 
 # Exemple de modification d'un ticket
 modify_ticket(

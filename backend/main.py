@@ -51,4 +51,4 @@ def modify_ticket_main(id: int, updated: dict):
     updated = modify_ticket("tickets.json",id,updated)
     if not updated:
         raise HTTPException(status_code=404, detail="Ticket not found/updated")
-    return {"message": "Ticket updated"}
+    return updated
