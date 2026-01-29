@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "title": "Alex Martin",
+    "description": "Plusieurs utilisateurs signalent l’impossibilité de se connecter à l’application interne de gestion des tickets depuis ce matin.",
+    "priority": "Low",
+    "status": "Pending",
+    "tags": [
+      "support",
+      "technical"
+    ],
+    "createdAt": "2026-01-10"
+  },
+  {
+    "id": 2,
+    "title": "Camille Dupont",
+    "description": "Demande de correction urgente sur une fonctionnalité critique du produit qui empêche la validation des commandes clients.",
+    "priority": "High",
+    "status": "Active",
+    "tags": [
+      "product",
+      "management"
+    ],
+    "createdAt": "2026-01-10"
+  },
+  {
+    "id": 3,
+    "title": "Julien Bernard",
+    "description": "Erreur 500 intermittente sur l’API lors de la récupération des données utilisateurs après la dernière mise à jour.",
+    "priority": "High",
+    "status": "Active",
+    "tags": [
+      "backend",
+      "api"
+    ],
+    "createdAt": "2026-01-11"
+  },
+  {
+    "id": 4,
+    "title": "Sarah Leroy",
+    "description": "Plusieurs tests automatisés échouent suite à une régression détectée sur le module de paiement.",
+    "priority": "Medium",
+    "status": "Active",
+    "tags": [
+      "qa",
+      "testing"
+    ],
+    "createdAt": "2026-01-11"
+  },
+  {
+    "id": 5,
+    "title": "Thomas Moreau",
+    "description": "Problème d’affichage sur le tableau de bord : les données ne se rafraîchissent pas après un changement de filtre.",
+    "priority": "Medium",
+    "status": "Pending",
+    "tags": [
+      "frontend",
+      "ui"
+    ],
+    "createdAt": "2026-01-12"
+  },
+  {
+    "id": 6,
+    "title": "Emma Petit",
+    "description": "Un client signale que certaines de ses demandes restent bloquées au statut “en cours” sans mise à jour depuis plusieurs jours.",
+    "priority": "Low",
+    "status": "Inactive",
+    "tags": [
+      "customer",
+      "support"
+    ],
+    "createdAt": "2026-01-12"
+  },
+  {
+    "id": 7,
+    "title": "Lucas Fontaine",
+    "description": "Échec du déploiement automatique en production à cause d’une erreur de configuration sur l’environnement serveur.",
+    "priority": "High",
+    "status": "Active",
+    "tags": [
+      "devops",
+      "infrastructure"
+    ],
+    "createdAt": "2026-01-13"
+  },
+  {
+    "id": 8,
+    "title": "Léa Robert",
+    "description": "Retours utilisateurs indiquant une navigation peu intuitive sur le formulaire de création de ticket.",
+    "priority": "Low",
+    "status": "Pending",
+    "tags": [
+      "ux",
+      "design"
+    ],
+    "createdAt": "2026-01-13"
+  },
+  {
+    "id": 9,
+    "title": "Maxime Girard",
+    "description": "Retard constaté sur plusieurs tâches du sprint en cours, nécessitant une réévaluation des priorités et des ressources.",
+    "priority": "High",
+    "status": "Inactive",
+    "tags": [
+      "project",
+      "management"
+    ],
+    "createdAt": "2026-01-14"
+  },
+  {
+    "id": 10,
+    "title": "Nina Lopez",
+    "description": "Un utilisateur ne parvient pas à réinitialiser son mot de passe via le portail interne malgré plusieurs tentatives.",
+    "priority": "Low",
+    "status": "Active",
+    "tags": [
+      "support",
+      "level1"
+    ],
+    "createdAt": "2026-01-14"
+  }
+]
