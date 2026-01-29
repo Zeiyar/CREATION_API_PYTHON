@@ -1,11 +1,25 @@
 # hors APIs
 import json
 import os
+from datetime import datetime
+
 
 file = os.path.getsize("tickets.json")  # récupérer la taille du fichier
 if file == 0:
     print("Erreur: Le fichier est vide")
     exit()  # quitter le script si vide
+
+
+# fonction pour parser les dates (format ISO 8601 : "2024-01-25T14:32:00")
+def parse_date(date_str):
+    if not date_str:                # verifier si la date existe ou non
+        return datetime.min
+    if isinstance(date_str, (int, float)):
+        return datetime.fromtimestamp(date_str / 1000)
+    try:
+        return datetime.fromisoformat(date_str)
+    except Exception:
+        return datetime.min
 
 
 # charger ticket JSON
@@ -50,31 +64,15 @@ def get_all_ticket_sorted(file_path):
         
 
     # Trier chaque ticket par priorité puis id
-    #sorted_status = sorted(
-    #    nbtickets_by_status.keys(),
-    #       key=lambda status: order_status.get(status,99))
-    
-    
-    #for status, tickets_list in sorted_status:
-    #    sorted_status[status] = sorted(
-    #for status, tickets_list in nbtickets_by_status.items():
-    #    nbtickets_by_status[status] = sorted(
-    #        tickets_list,
-    #        key=lambda el: (
-    #            #order_prio.get(el["priority"], 99),
-    #            order_prio.get(el.get("priority"), 99),
-    #            el.get("createdAt", 0),
-    #        )
-    #    )
-
-    # Trier chaque ticket par priorité puis id
     for status, ticket_list in nbtickets_by_status.items():     #.items(): récupère clé ("Active", "Pending", etc) et valeur (liste des tickets du statut)
         nbtickets_by_status[status] = sorted(               #remplace pour une nouvelle liste triée
             ticket_list,                              #la liste des tickets à trier
             key=lambda el: (                               #key définit la fonction de tri et el chaque ticket
                 order_prio.get(el.get("priority"), 99),       #si priorité absente, valeur 99 (fin de liste)
+                parse_date(el.get("createdAt")),              #trier par date de création (plus ancien en premier)
                 el.get("id", 0)
-            )
+            ),
+            reverse=False                              #ordre croissant
         )
 
     # Trier les status entre eux 
@@ -89,7 +87,6 @@ def get_all_ticket_sorted(file_path):
     # résultat final
     result = {
         "count": count,
-        #"tickets": sorted_status
         "tickets": sorted_tickets_by_status
     }
 

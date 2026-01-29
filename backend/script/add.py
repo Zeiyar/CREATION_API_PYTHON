@@ -20,22 +20,3 @@ def add_ticket(new_ticket,file_path):
     with open(file_path,"w",encoding="utf-8") as file:
         json.dump(tickets,file,indent=2,ensure_ascii=False)
     #print("adding successfull")
-
-
-
-
-# Exemple d'utilisation de la fonction add_ticket pour faire un test
-add_ticket(
-    {
-    "id": 11,
-    "title": "Pierre Marcel",
-    "description": "A fait tomber son téléphone dans l'eau",
-    "priority": "High",
-    "status": "Active",
-    "tags": [
-      "bourde",
-      "téléphone"
-    ],
-    "createdAt": "2026-01-20"
-  },"tickets.json"
-)
