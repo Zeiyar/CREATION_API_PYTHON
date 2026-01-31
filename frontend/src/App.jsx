@@ -4,64 +4,143 @@ import {getTickets, getTicketById, postTicket, deleteTicket, patchTicket} from '
 
 
 function App() {
-  const [editing, setEditing] = useState(false);
 
-  const [id,setId] = useState(1);
-  const [title,setTitle] = useState("");
-  const [description,setDescription] = useState("");
-  const [priority,setPriority] = useState("");
-  const [status_ticket,setStatus_ticket] = useState("");
-  const [adding,setAdding] = useState(false);
-  const [tickets, setTickets] = useState({
-    Active:[],
-    Inactive:[],
-    Pending:[]
-  });    // État pour stocker les tickets récupérés
+  // État pour stocker le nombre de tickets par statut
+  const [ticketCounts, setTicketCounts] = useState({
+    Active: 0,
+    Pending: 0,
+    Inactive: 0
+  });
+
+  const [backendError, setBackendError] = useState(null);
+  const [allTickets,setAllTickets] = useState([]); // État pour stocker tous les tickets combinés
+  const [filteredTickets, setFilteredTickets] = useState([]); // État pour stocker les tickets filtrés
+
+  const [filterStatus, setFilterStatus] = useState("");    // Status filter
+  const [filterPriority, setFilterPriority] = useState(""); // Priority filter
+
+  const [editing, setEditing] = useState(false);    // État pour gérer l’édition d’un ticket
+  const [adding,setAdding] = useState(false);     // État pour gérer l’ajout d’un nouveau ticket
+
+  const [id,setId] = useState(null);        // État pour stocker l’ID du ticket en cours d’édition ou de visualisation
+  const [title,setTitle] = useState("");    // État pour stocker le titre du ticket en cours d’édition ou d’ajout
+  const [description,setDescription] = useState("");      // État pour stocker la description du ticket en cours d’édition ou d’ajout
+  const [priority,setPriority] = useState("");        // État pour stocker la priorité du ticket en cours d’édition ou d’ajout
+  const [status_ticket,setStatus_ticket] = useState("");      // État pour stocker le statut du ticket en cours d’édition ou d’ajout
+  const [selectedTicketId, setSelectedTicketId] = useState(null);
+
   
-  const [allTickets,setAllTickets] = useState([
-    ...tickets.Pending,
-    ...tickets.Active,
-    ...tickets.Inactive
-    ]);
-  const [count, setCount] = useState({
-      Pending: 0,
-      Active: 0,
-      Inactive: 0,
-    });
-
   const url = "http://127.0.0.1:8000/tickets"
 
-  // Utilisation de useEffect pour récupérer les tickets au montage du composant
   useEffect(() => {
-  getTickets(url)
-    .then(data => {
-      if (!data || !data.tickets) return;
-      setTickets(data.tickets);
-      setCount(data.count);
-    })
-    .catch(console.error);
-}, []);
-
-  useEffect(() => {
-    setAllTickets([
-      ...tickets.Pending,
-      ...tickets.Active,
-      ...tickets.Inactive,
-    ]);
-  }, [tickets]);
-
-  const handleDeleteTicket = async(ticket) => {
-    await deleteTicket(url,ticket.id);
-    
-    setTickets(prev => {
-    const newState = {
-      Active: prev.Active.filter(t => t.id !== ticket.id),
-      Pending: prev.Pending.filter(t => t.id !== ticket.id),
-      Inactive: prev.Inactive.filter(t => t.id !== ticket.id),
-    };
-    return newState;
+    fetch("http://127.0.0.1:8000/")  // endpoint root pour vérifier le backend
+      .then(response => {if (!response.ok) {
+          throw new Error(`Backend unreachable (status ${response.status})`);
+        }
+        return response.json();
+      })
+      .then(data => {console.log("Backend OK:", data);
+        setBackendError(null); // pas d'erreur
+      })
+      .catch(err => {console.error("Erreur backend:", err);
+        setBackendError("Le backend n'est pas lancé ou inaccessible. Veuillez démarrer uvicorn.");
       });
+  }, []);
+
+  
+  
+  // Utilisation de useEffect pour récupérer les tickets au montage du composant
+
+  useEffect(() => {
+  // Construire l’URL avec les filtres
+  let query = [];
+  if (filterStatus) query.push(`status=${filterStatus}`);
+  if (filterPriority) query.push(`priority=${filterPriority}`);
+  const fetchUrl = query.length > 0 ? `${url}?${query.join("&")}` : url;
+
+  // Récupérer les tickets avec les filtres appliqués
+  getTickets(fetchUrl).then(data => {
+      if (!data || !data.tickets) return;   // Vérifier si les données sont valides
+
+      const merged = [
+      ...(data.tickets.Pending || []),
+      ...(data.tickets.Active || []),
+      ...(data.tickets.Inactive || []),
+      ];
+
+      setAllTickets(merged);
+      setFilteredTickets(merged);
+      })
+    .catch(console.error);  // Gérer les erreurs de récupération des tickets
+  }, []);
+
+
+  useEffect(() => {
+  let result = [...allTickets];
+
+  if (filterStatus) {
+    result = result.filter(t => t.status === filterStatus);
+  }
+
+  if (filterPriority) {
+    result = result.filter(t => t.priority === filterPriority);
+  }
+
+  setFilteredTickets(result);
+}, [filterStatus, filterPriority, allTickets]);
+
+  
+  // --- Add / Edit / Delete handlers ---
+  const handleAddTicket = async () => {
+    if (!title || !priority || !status_ticket) {
+      alert("Title, Priority et Status sont obligatoires");
+      return;
+    }
+
+    const newTicket = {
+      title,
+      description,
+      priority,
+      status: status_ticket,
+      createdAt: new Date().toISOString().split(".")[0]
     };
+
+    const created = await postTicket(url, newTicket);
+    if (created) {
+      setAllTickets(prev => [...prev, created]);
+      setAdding(false);
+      resetForm();
+    }
+  };
+
+
+  const handleEditTicket = async () => {
+    const updatedTicket = {
+      title,
+      description,
+      priority,
+      status: status_ticket,
+      createdAt: new Date().toISOString().split(".")[0]
+    };
+
+    const updated = await patchTicket(url, id, updatedTicket);
+    if (!updated) return;
+
+    // Supprimer l'ancien ticket
+    setAllTickets(prev =>
+    prev.map(t => (t.id === id ? updated : t))
+  );
+
+  setEditing(false);
+  setAdding(false);
+  resetForm();
+  };
+
+
+  const handleDeleteTicket = async (ticketId) => {
+  await deleteTicket(url, ticketId);
+  setAllTickets(prev => prev.filter(t => t.id !== ticketId));
+  };
 
   const handleEditClick = (ticket) => {
     setId(ticket.id);
@@ -69,114 +148,79 @@ function App() {
     setDescription(ticket.description);
     setPriority(ticket.priority);
     setStatus_ticket(ticket.status);
-    setEditing(true);
     setAdding(true);
-  };
-  
-  const handlePatchTicket = async () => {
-    const updatedTicket = {
-      title,
-      description,
-      priority,
-      status: status_ticket.trim(),
-      createdAt: new Date().toISOString().split(".")[0],
-    };
-
-    const updated = await patchTicket(url, id, updatedTicket);
-
-    if (!updated) return;
-
-    setTickets(prev => {
-      const newState = {
-        Active: [...prev.Active],
-        Pending: [...prev.Pending],
-        Inactive: [...prev.Inactive],
-      };
-
-      // retirer l’ancien ticket
-      Object.keys(newState).forEach(status => {
-        newState[status] = newState[status].filter(t => t.id !== id);
-      });
-
-      // ajouter le nouveau
-      newState[updated.status] = [...newState[updated.status] || [], updated];
-
-      return newState;
-    });
-
-    setAdding(false);
-    setEditing(false);
+    setEditing(true);
   };
 
-  const handleAddTicket = async () => {
-    const newTicket = {
-      title,
-      description,
-      priority,
-      status: status_ticket.trim(),
-      createdAt: new Date().toISOString(),
-    };
-
-    if (!priority || !status_ticket) {
-      alert("Priority et status obligatoires");
-      return;
-    }
-
-    const created = await postTicket(url, newTicket);
-
-    if (created) {
-      setTickets(prev => ({
-        ...prev,
-        [created.status]: [...prev[created.status], created]
-      }));
-
-      setAdding(false);
-    }
+  const resetForm = () => {
+    setId(null);
+    setTitle("");
+    setDescription("");
+    setPriority("");
+    setStatus_ticket("");
   };
 
+  const ticketCount = {
+    Pending: allTickets.filter(t => t.status === "Pending").length,
+    Active: allTickets.filter(t => t.status === "Active").length,
+    Inactive: allTickets.filter(t => t.status === "Inactive").length,
+  };
+
+
+
+  // Rendu graphique du composant App.jsx
   return (
+
+
     <div className="tickets-page">
-      <div className="tickets-header-bar">
-        <h1 id="top">All open tickets</h1>
 
-        <div className="stats-container">
-          <div className="stat-card pending">
-            <span className="stat-number">{count.Pending ?? 0}</span>
-            <span className="stat-label">Pending</span>
+      {/* --- Message d'erreur backend --- */}
+        {backendError && (
+          <div className="backend-error">
+            ⚠️ {backendError}
           </div>
+        )}
 
-          <div className="stat-card active">
-            <span className="stat-number">{count.Active ?? 0}</span>
-            <span className="stat-label">Active</span>
-          </div>
+      <h1 id="top">Tickets Dashboard</h1>
 
-          <div className="stat-card inactive">
-            <span className="stat-number">{count.Inactive ?? 0}</span>
-            <span className="stat-label">Inactive</span>
-          </div>
-        </div>
-        
-        {adding && (
-          <div className="ticket-form">
-            <input
-              placeholder="Titre"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-            />
+      {/* --- Compteur des tickets --- */}
+      <div className="ticket-counts">
+        <span>Pending: {ticketCount.Pending}</span>
+        <span>Active: {ticketCount.Active}</span>
+        <span>Inactive: {ticketCount.Inactive}</span>
+      </div>
 
-            <textarea
-              placeholder="Description"
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-            />
 
+      {/* --- Filtres --- */}
+      <div className="filters">
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+          <option value="">All Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+
+        <select value={filterPriority} onChange={e => setFilterPriority(e.target.value)}>
+          <option value="">All Priority</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+
+      {/* --- Formulaire Add/Edit en overlay --- */}
+      {adding && (
+        <div className="modal-overlay" onClick={() => { setAdding(false); setEditing(false); resetForm(); }}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h2>{editing ? "Modifier le ticket" : "Ajouter un ticket"}</h2>
+            <input placeholder="Titre" value={title} onChange={e => setTitle(e.target.value)} />
+            <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
             <select value={priority} onChange={e => setPriority(e.target.value)}>
               <option value="">Select Priority</option>
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
             </select>
-
             <select value={status_ticket} onChange={e => setStatus_ticket(e.target.value)}>
               <option value="">Select Status</option>
               <option value="Pending">Pending</option>
@@ -185,32 +229,34 @@ function App() {
             </select>
 
             <div className="form-actions">
-              <button
-                className="btn primary"
-                onClick={editing ? handlePatchTicket : handleAddTicket}
-              >
-                {editing ? "Update ticket" : "Create ticket"}
+              <button className="btn primary" onClick={editing ? handleEditTicket : handleAddTicket}>
+                {editing ? "Update" : "Add"} Ticket
               </button>
-
-              <button
-                className="btn secondary"
-                onClick={() => {
-                  setAdding(false);
-                  setEditing(false);
-                }}
-              >
+              <button className="btn secondary" onClick={() => { setAdding(false); setEditing(false); resetForm(); }}>
                 Cancel
               </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Button to add a new ticket */}
-        <button 
-          className="btn primary" 
-          onClick={() => adding ? handleAddTicket() : setAdding(true)}>+ Add ticket</button>   
-      </div>
 
+      <div className="add-ticket-bar">
+            <button
+              className="btn add"
+              onClick={() => {
+                setAdding(true);
+                setEditing(false);
+                resetForm();
+              }}
+            >
+              ➕ Ajouter un ticket
+            </button>
+          </div>
+      
+
+
+      {/* --- Liste des tickets filtrés --- */}
       <div className="tickets-table">
         <div className="tickets-row tickets-head">
           <span>Title</span>
@@ -220,46 +266,25 @@ function App() {
           <span>Actions</span>
         </div>
 
-        {allTickets.map(t => (
-          <div
-            key={t.id}
-            className="tickets-row ticket-item"
-            onClick={() => setId(t.id)}
+        {filteredTickets.map(t => (
+          <div key={t.id} className="tickets-row ticket-item"
+            onClick={() => setSelectedTicketId(prevId => (prevId === t.id ? null : t.id))} // ← sélection du ticket
           >
-            <span className="ticket-title">{t.title}</span>
-
-            <span className={`status ${t.status.toLowerCase()}`}>
-              {t.status}
-            </span>
-
-            <span>{t.priority}</span>
+            <span>{t.title}</span>
+            <span className={`status ${t.status.toLowerCase()}`}>{t.status}</span>
+            <span className={`priority ${t.priority.toLowerCase()}`}>{t.priority}</span>
             <span>{t.createdAt}</span>
-
-            <span
-              className="actions"
-              onClick={e => e.stopPropagation()} // empêche le click global
-            >
-              <button
-                className="icon-btn edit"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(t);
-                }}
-              >
-                <a href="#top">✏️</a>
-              </button>
-
-              <button
-                className="icon-btn delete"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteTicket(t);
-                }}
-              >
-                <a href="#top">🗑️</a>
-              </button>
+            <span className="actions">
+            <button onClick={() => handleEditClick(t)}>✏️</button>
+            <button onClick={() => handleDeleteTicket(t.id)}>🗑️</button>
             </span>
-            {id == t.id ? <span>{t.description}</span> : <span>cliquer pour voir la description</span>} {/*show description if ticket is selected else it just show the other message*/}
+
+            {/* Affichage conditionnel de la description */}
+            {selectedTicketId === t.id ? (
+              <div className="ticket-description">{t.description}</div>
+            ) : (
+              <div className="ticket-description-placeholder">Cliquez pour voir la description</div>
+            )}
           </div>
         ))}
       </div>
